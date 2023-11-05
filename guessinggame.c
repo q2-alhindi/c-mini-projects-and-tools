@@ -2,12 +2,13 @@
 #include <stdlib.h>
 #include <time.h>
 
-int rand_num, guess, numOfguesses; //declare these variables as integers
-int playerscores[3]={0}; //create an array named playerscores which can hold 3 integers
-int randomnumber[3]={0}; //create an array named randomnumber which can hold 3 integers
-int guessnumber[3]={0}; //create an array named guessnumber which can hold 3 integers
-int currentplayer=1; 
+
 int main(){
+    int rand_num, guess, numOfguesses; //declare these variables as integers
+    int playerscores[3]={0}; //create an array named playerscores which can hold 3 integers
+    int randomnumber[3]={0}; //create an array named randomnumber which can hold 3 integers
+    int guessnumber[3]={0}; //create an array named guessnumber which can hold 3 integers
+    int currentplayer=1; 
     srand(time(NULL)); 
     printf("Welcome to the guessing game.\n");
     printf("choose the number of players that wish to play: ");
@@ -63,4 +64,5 @@ int main(){
                     }
                     }
                 }
+        
                 
