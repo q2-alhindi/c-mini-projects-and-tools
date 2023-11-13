@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 
- int main(int argc, char *argv[1]){
+ int main(int argc, char *argv[]){
     if (argc==1){ //if its 1 not enough arguements were passed for the command
         printf("Not enough arguements entered! The correct way: cp <src> <dest>\n");
     }else if(argc==3){ //if its 3 then enough arguements were passed
