@@ -15,7 +15,7 @@
         }
         int dest = open(argv[2], O_CREAT | O_TRUNC | O_WRONLY, 0766); // open the destination file for writing, creating it if it doesn't exist, truncating it if it does
 
-        if(!dest){ //if dest not valid
+        if(!dest){ //if destination file is not valid
             printf("File creation error! Do you have permissions");
         }
         int size = 8192; //the bytes of data we want to read in at a time
