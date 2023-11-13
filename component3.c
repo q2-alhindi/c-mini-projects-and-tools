@@ -9,7 +9,7 @@
         printf("Not enough arguements entered! The correct way: cp <src> <dest>\n");
     }else if(argc==3){ //if its 3 then enough arguements were passed
         int src = open(argv[1], O_RDONLY); //opens source file and assigns the file id value to the integer src
-        if(!src){ //if source file is not a valid file print this
+        if(src==-1){ //if source file is not a valid file print this
             printf("Source error! File doesnt exist");
             return 0;
         }
