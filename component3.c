@@ -21,8 +21,8 @@
         int size = 8192; //the bytes of data we want to read in at a time
         char *buf = malloc(sizeof(char) * size); //allocate memory to store all the information
         int amt = 0; //declare amt as an integer
-        while((amt = read(src, buf, size))>0){ //the number of bytes read is stored in amt
-            write(dest, buf, amt); //write data in the destination file
+        while((amt = read(src, buf, size))>0){ //the read function reads data from source file into 'buf' with a max of 'size', this while loops keeps going as long as the read is more than 0
+            write(dest, buf, amt); //write data in the destination file from the 'buf'
         }
         //close source and destination files
         close(src);
