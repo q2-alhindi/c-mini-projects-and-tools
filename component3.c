@@ -1,39 +1,64 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <fcntl.h> //for the open function
+#include <fcntl.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <string.h>
 
- int main(int argc, char *argv[]){
-    if (argc==1){ //if its 1 not enough arguements were passed for the command
-        printf("Not enough arguements entered! The correct way: cp <src> <dest>\n");
-    }else if(argc==3){ //if its 3 then enough arguements were passed
-        int src = open(argv[1], O_RDONLY); //opens source file and assigns the file id value to the integer src
-        if(src==-1){ //if source file is not a valid file print this
-            printf("Source error! File doesnt exist");
+
+int main(int argc, char *argv[]) {
+    if (argc < 3) {
+        printf("Not enough arguments entered! The correct way: cp [-i] <src> <dest>\n");
+        return 1;
+    }
+
+    int interactive = 0; // Flag to indicate interactive mode
+
+    // Check for the interactive option
+    if (argc == 4 && strcmp(argv[1], "-i") == 0) {
+        interactive = 1;
+        argv++; // Skip the -i option
+    }
+
+    int src = open(argv[1], O_RDONLY);
+    if (src == -1) {
+        printf("Source error! File doesn't exist\n");
+        return 1;
+    }
+
+    int dest = open(argv[2], O_CREAT | O_TRUNC | O_WRONLY, 0766);
+    if (dest == -1) {
+        printf("File creation error! Do you have permissions?\n");
+        close(src);
+        return 1;
+    }
+
+    int size = 8192;
+    char *buf = malloc(sizeof(char) * size);
+    int amt = 0;
+
+    if (interactive) {
+        // Ask for confirmation before overwriting
+        printf("Do you want to overwrite '%s'? (y/n): ", argv[2]);
+        char response;
+        scanf(" %c", &response);
+
+        if (response != 'y') {
+            printf("File not copied.\n");
+            close(src);
+            close(dest);
+            free(buf);
             return 0;
         }
-        int dest = open(argv[2], O_CREAT | O_TRUNC | O_WRONLY, 0766); // open the destination file for writing, creating it if it doesn't exist, truncating it if it does
-
-        if(dest==-1){ //if destination file is not valid
-            printf("File creation error! Do you have permissions");
-        }
-        int size = 8192; //the bytes of data we want to read in at a time
-        char *buf = malloc(sizeof(char) * size); //allocate memory to store all the information
-        int amt = 0; //declare amt as an integer
-        while((amt = read(src, buf, size))>0){ //the read function reads data from source file into 'buf' with a max of 'size', this while loops keeps going as long as the read is more than 0
-            write(dest, buf, amt); //write data in the destination file from the 'buf'
-        }
-        //close source and destination files
-        close(src);
-        close(dest);
-        //free the allocated memory
-        free(buf);    
-    }else {
-        printf("Incorrect usage! The correct way: cp <src> <dest>");
     }
-    return 0;
- }
 
-    
-    
+    while ((amt = read(src, buf, size)) > 0) {
+        write(dest, buf, amt);
+    }
+
+    close(src);
+    close(dest);
+    free(buf);
+
+    return 0;
+}
