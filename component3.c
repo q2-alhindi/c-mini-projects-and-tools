@@ -5,19 +5,64 @@
 #include <sys/types.h>
 #include <string.h>
 
+void create_backup(const char *filename) {
+    // Create a backup filename by appending a tilde (~)
+    char backup_filename[256];
+    snprintf(backup_filename, sizeof(backup_filename), "%s~", filename);
+
+    // Copy the original file to the backup file
+    int src = open(filename, O_RDONLY);
+    int dest = open(backup_filename, O_CREAT | O_TRUNC | O_WRONLY, 0766);
+    
+    if (src != -1 && dest != -1) {
+        int size = 8192;
+        char *buf = malloc(sizeof(char) * size);
+        int amt = 0;
+
+        while ((amt = read(src, buf, size)) > 0) {
+            write(dest, buf, amt);
+        }
+
+        close(src);
+        close(dest);
+        free(buf);
+    } else {
+        printf("Backup creation error! Do you have permissions?\n");
+    }
+}
 
 int main(int argc, char *argv[]) {
     if (argc < 3) {
-        printf("Not enough arguments entered! The correct way: cp [-i] <src> <dest>\n");
+        printf("Not enough arguments entered! The correct way: cp [-i] [-b] <src> <dest>\n");
         return 1;
     }
 
     int interactive = 0; // Flag to indicate interactive mode
+    int backup = 0;      // Flag to indicate backup mode
 
-    // Check for the interactive option
-    if (argc == 4 && strcmp(argv[1], "-i") == 0) {
-        interactive = 1;
-        argv++; // Skip the -i option
+    // Check for the interactive and backup options
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-i") == 0) {
+            interactive = 1;
+        } else if (strcmp(argv[i], "-b") == 0) {
+            backup = 1;
+        }
+    }
+
+    // Adjust the argv pointer based on options
+    int arg_offset = interactive + backup;
+    argv += arg_offset;
+    argc -= arg_offset;
+
+    // Check if there are enough arguments after adjusting for options
+    if (argc < 3) {
+        printf("Not enough arguments entered! The correct way: cp [-i] [-b] <src> <dest>\n");
+        return 1;
+    }
+
+    if (backup) {
+        // Create a backup of the destination file
+        create_backup(argv[2]);
     }
 
     int src = open(argv[1], O_RDONLY);
