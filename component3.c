@@ -9,18 +9,22 @@ void create_backup(const char *filename) {
     // Create a backup filename by appending a tilde (~)
     char backup_filename[256];
     snprintf(backup_filename, sizeof(backup_filename), "%s~", filename);
+    backup_filename[sizeof(backup_filename) - 1] = '\0';  // Ensure null-termination
+
+    // Debugging: Print backup filename
+    printf("Backup Filename: %s\n", backup_filename);
 
     // Open the original file for reading
     int src = open(filename, O_RDONLY);
     if (src == -1) {
-        printf("Source error! File doesn't exist\n");
+        perror("Source File Open Error");
         return;
     }
 
     // Open the backup file for writing
     int dest = open(backup_filename, O_CREAT | O_TRUNC | O_WRONLY, 0766);
     if (dest == -1) {
-        printf("Backup creation error! Do you have permissions?\n");
+        perror("Backup File Creation Error");
         close(src);
         return;
     }
@@ -38,7 +42,6 @@ void create_backup(const char *filename) {
     close(dest);
     free(buf);
 }
-
 
 int main(int argc, char *argv[]) {
     if (argc < 3) {
@@ -76,13 +79,13 @@ int main(int argc, char *argv[]) {
 
     int src = open(argv[1], O_RDONLY);
     if (src == -1) {
-        printf("Source error! File doesn't exist\n");
+        perror("Source File Open Error");
         return 1;
     }
 
     int dest = open(argv[2], O_CREAT | O_TRUNC | O_WRONLY, 0766);
     if (dest == -1) {
-        printf("File creation error! Do you have permissions?\n");
+        perror("File Creation Error");
         close(src);
         return 1;
     }
