@@ -21,6 +21,9 @@ void create_backup(const char *filename) {
         return;
     }
 
+    // Debugging: Print return value of open for source file
+    printf("Source File Descriptor: %d\n", src);
+
     // Open the backup file for writing
     int dest = open(backup_filename, O_CREAT | O_TRUNC | O_WRONLY, 0766);
     if (dest == -1) {
@@ -28,6 +31,9 @@ void create_backup(const char *filename) {
         close(src);
         return;
     }
+
+    // Debugging: Print return value of open for backup file
+    printf("Backup File Descriptor: %d\n", dest);
 
     // Copy the original file to the backup file
     int size = 8192;
@@ -42,6 +48,7 @@ void create_backup(const char *filename) {
     close(dest);
     free(buf);
 }
+
 
 int main(int argc, char *argv[]) {
     if (argc < 3) {
