@@ -3,9 +3,16 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <string.h>
 
 void create_backup(const char *filename) {
+    // Check if the source file exists
+    if (access(filename, F_OK) == -1) {
+        printf("Source error! File doesn't exist\n");
+        return;
+    }
+
     // Create a backup filename by appending a tilde (~)
     char backup_filename[256];
     snprintf(backup_filename, sizeof(backup_filename), "%s~", filename);
@@ -13,7 +20,7 @@ void create_backup(const char *filename) {
     // Open the original file for reading
     int src = open(filename, O_RDONLY);
     if (src == -1) {
-        printf("Source error! File doesn't exist\n");
+        printf("Source error! Unable to open source file\n");
         return;
     }
 
