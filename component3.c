@@ -10,25 +10,33 @@ void create_backup(const char *filename) {
     char backup_filename[256];
     snprintf(backup_filename, sizeof(backup_filename), "%s~", filename);
 
-    // Copy the original file to the backup file
+    // Open the original file for reading
     int src = open(filename, O_RDONLY);
-    int dest = open(backup_filename, O_CREAT | O_TRUNC | O_WRONLY, 0766);
-    
-    if (src != -1 && dest != -1) {
-        int size = 8192;
-        char *buf = malloc(sizeof(char) * size);
-        int amt = 0;
-
-        while ((amt = read(src, buf, size)) > 0) {
-            write(dest, buf, amt);
-        }
-
-        close(src);
-        close(dest);
-        free(buf);
-    } else {
-        printf("Backup creation error! Do you have permissions?\n");
+    if (src == -1) {
+        printf("Source error! File doesn't exist\n");
+        return;
     }
+
+    // Open the backup file for writing
+    int dest = open(backup_filename, O_CREAT | O_TRUNC | O_WRONLY, 0766);
+    if (dest == -1) {
+        printf("Backup creation error! Do you have permissions?\n");
+        close(src);
+        return;
+    }
+
+    // Copy the original file to the backup file
+    int size = 8192;
+    char *buf = malloc(sizeof(char) * size);
+    int amt = 0;
+
+    while ((amt = read(src, buf, size)) > 0) {
+        write(dest, buf, amt);
+    }
+
+    close(src);
+    close(dest);
+    free(buf);
 }
 
 int main(int argc, char *argv[]) {
