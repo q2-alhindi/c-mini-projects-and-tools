@@ -5,94 +5,41 @@
 #include <sys/types.h>
 #include <string.h>
 
-void create_backup(const char *filename) {
-    // Create a backup filename by appending a tilde (~)
-    char backup_filename[256];
-    snprintf(backup_filename, sizeof(backup_filename), "%s~", filename);
-    backup_filename[sizeof(backup_filename) - 1] = '\0';  // Ensure null-termination
-
-    // Debugging: Print backup filename
-    printf("Backup Filename: %s\n", backup_filename);
-
-    // Open the original file for reading
-    int src = open(filename, O_RDONLY);
-    if (src == -1) {
-        perror("Source File Open Error");
-        return;
-    }
-
-    // Debugging: Print return value of open for source file
-    printf("Source File Descriptor: %d\n", src);
-
-    // Open the backup file for writing
-    int dest = open(backup_filename, O_CREAT | O_TRUNC | O_WRONLY, 0766);
-    if (dest == -1) {
-        perror("Backup File Creation Error");
-        close(src);
-        return;
-    }
-
-    // Debugging: Print return value of open for backup file
-    printf("Backup File Descriptor: %d\n", dest);
-
-    // Copy the original file to the backup file
-    int size = 8192;
-    char *buf = malloc(sizeof(char) * size);
-    int amt = 0;
-
-    while ((amt = read(src, buf, size)) > 0) {
-        write(dest, buf, amt);
-    }
-
-    close(src);
-    close(dest);
-    free(buf);
-}
-
-
 int main(int argc, char *argv[]) {
     if (argc < 3) {
-        printf("Not enough arguments entered! The correct way: cp [-i] [-b] <src> <dest>\n");
+        printf("Not enough arguments entered! The correct way: cp [-i] <src> <dest>\n");
         return 1;
     }
 
     int interactive = 0; // Flag to indicate interactive mode
-    int backup = 0;      // Flag to indicate backup mode
 
-    // Check for the interactive and backup options
+    // Check for the interactive option
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-i") == 0) {
             interactive = 1;
-        } else if (strcmp(argv[i], "-b") == 0) {
-            backup = 1;
         }
     }
 
     // Adjust the argv pointer based on options
-    int arg_offset = interactive + backup;
+    int arg_offset = interactive;
     argv += arg_offset;
     argc -= arg_offset;
 
     // Check if there are enough arguments after adjusting for options
     if (argc < 3) {
-        printf("Not enough arguments entered! The correct way: cp [-i] [-b] <src> <dest>\n");
+        printf("Not enough arguments entered! The correct way: cp [-i] <src> <dest>\n");
         return 1;
-    }
-
-    if (backup) {
-        // Create a backup of the destination file
-        create_backup(argv[2]);
     }
 
     int src = open(argv[1], O_RDONLY);
     if (src == -1) {
-        perror("Source File Open Error");
+        printf("Source error! File doesn't exist\n");
         return 1;
     }
 
     int dest = open(argv[2], O_CREAT | O_TRUNC | O_WRONLY, 0766);
     if (dest == -1) {
-        perror("File Creation Error");
+        printf("File creation error! Do you have permissions?\n");
         close(src);
         return 1;
     }
