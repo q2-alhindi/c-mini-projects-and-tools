@@ -21,13 +21,13 @@ int main(int argc, char *argv[]) {
 
     int interactive = 0; // Flag to indicate interactive mode
 
+    
     // Check for the help option
-    for (int i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
-            print_help();
-            return 0;
-        }
+    if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0) {
+        print_help();
+        return 0;
     }
+
 
     // Check for the interactive option
     for (int i = 1; i < argc; i++) {
