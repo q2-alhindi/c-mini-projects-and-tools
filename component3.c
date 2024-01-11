@@ -14,7 +14,7 @@ void print_help() {
 }
 
 int main(int argc, char *argv[]) {
-    if (argc < 3) {
+    if (argc < 2) {
         printf("Not enough arguments entered! Use '-h' or '--help' for usage information.\n");
         return 1;
     }
