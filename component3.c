@@ -47,7 +47,45 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // Rest of the code remains the same
+    int src = open(argv[1], O_RDONLY);
+    if (src == -1) {
+        printf("Source error! File doesn't exist\n");
+        return 1;
+    }
+
+    int dest = open(argv[2], O_CREAT | O_TRUNC | O_WRONLY, 0766);
+    if (dest == -1) {
+        printf("File creation error! Do you have permissions?\n");
+        close(src);
+        return 1;
+    }
+
+    int size = 8192;
+    char *buf = malloc(sizeof(char) * size);
+    int amt = 0;
+
+    if (interactive) {
+        // Ask for confirmation before overwriting
+        printf("Do you want to overwrite '%s'? (y/n): ", argv[2]);
+        char response;
+        scanf(" %c", &response);
+
+        if (response != 'y') {
+            printf("File not copied.\n");
+            close(src);
+            close(dest);
+            free(buf);
+            return 0;
+        }
+    }
+
+    while ((amt = read(src, buf, size)) > 0) {
+        write(dest, buf, amt);
+    }
+
+    close(src);
+    close(dest);
+    free(buf);
 
     return 0;
 }
