@@ -6,11 +6,11 @@
 #include <string.h>
 
 void print_help() {
-    printf("Usage: cp [-i] <src> <dest>\n");
+    printf("Usage: cp <src> <dest>\n");
     printf("Copy the contents of the source file to the destination file.\n");
     printf("\nOptions:\n");
-    printf("  -i   Prompt before overwriting the destination file.\n");
-    printf("  -h, --help   Display this help message.\n");
+    printf("  -i   Prompt before overwriting the destination file. Usage: cp -i <src> <dest>\n");
+    printf("  -h, --help   Display this help message. Usage: cp -h or cp --help\n");
 }
 
 int main(int argc, char *argv[]) {
