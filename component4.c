@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
     strcpy(overflow.source, argv[1]);
 
     if(strcmp(overflow.canary, "CANARY") !=0 ){
-        printf("Overflow detected"\n);
+        printf("Overflow detected\n");
         printf("Buffer %s", overflow.canary);
         return 0;
     }
