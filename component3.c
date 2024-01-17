@@ -5,6 +5,7 @@
 #include <sys/types.h>
 #include <string.h>
 
+//function called when the help flag is used
 void print_help() {
     printf("Usage: cp <src> <dest>\n");
     printf("Copy the contents of the source file to the destination file.\n");
@@ -14,8 +15,12 @@ void print_help() {
 }
 
 int main(int argc, char *argv[]) {
+    // Check if the number of command-line arguments is less than 2
     if (argc < 2) {
+         // Print an error message indicating insufficient arguments
         printf("Not enough arguments entered! Use '-h' or '--help' for usage information.\n");
+
+        // Return a non-zero value to indicate an error condition
         return 1;
     }
 
@@ -47,13 +52,16 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+// Attempt to open the source file specified in the first command-line argument for reading
     int src = open(argv[1], O_RDONLY);
+// Check if the file opening operation was unsuccessful (indicated by src == -1)
     if (src == -1) {
         printf("Source error! File doesn't exist\n");
         return 1;
     }
-
+// Attempt to open or create the destination file specified in the second command-line argument
     int dest = open(argv[2], O_CREAT | O_TRUNC | O_WRONLY, 0766);
+// Check if the file opening or creation operation for the destination file was unsuccessful
     if (dest == -1) {
         printf("File creation error! Do you have permissions?\n");
         close(src);
