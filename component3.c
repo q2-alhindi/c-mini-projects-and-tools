@@ -47,12 +47,7 @@ int main(int argc, char *argv[]) {
     int arg_offset = interactive + numbered_lines;
     argv += arg_offset;
     argc -= arg_offset;
-
-    // Check if there are enough arguments after adjusting for options
-    if (argc < 2) {
-        printf("Not enough arguments entered! Use '-h' or '--help' for usage information.\n");
-        return 1;
-    }
+    
 
     // Attempt to open the source file specified in the first command-line argument for reading
     int src = open(argv[1], O_RDONLY);
